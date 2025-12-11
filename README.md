@@ -5,7 +5,7 @@
   <p align="center"><span><a href=""></a></span>
               <a>Yanghong Mei<sup>*1,5</sup>,</a>
               <a>Yirong Yang<sup>*2</sup>,</a>
-             <a>Longteng Guo<sup>†1</sup>,</a>
+              <a>Longteng Guo<sup>†1</sup>,</a>
               <a>Qunbo Wang<sup>3</sup>,</a>
               <a>Ming-Ming Yu<sup>2</sup>,</a> <br>
               <a>Xingjian He<sup>1</sup>,</a>
@@ -23,10 +23,10 @@
 <p align="center">
   <a href="https://arxiv.org/abs/2512.09607" target="_blank">
     <img src="https://img.shields.io/badge/ArXiv-2512.09607-red">
-  </a>
+  </a>&nbsp;&nbsp;
   <a href="https://github.com/Vigar0108M/UrbanNav" target="_blank">
     <img src="https://img.shields.io/badge/Project-UrbanNav-blue">
-  </a>
+  </a>&nbsp;&nbsp;
 <a href="https://github.com/Vigar0108M/UrbanNav" target="_blank">
     <img src="https://img.shields.io/badge/License-MIT-green">
 </a>

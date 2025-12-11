@@ -6,6 +6,7 @@ import argparse
 import numpy as np
 from datetime import datetime
 from statistics import mean
+import wandb
 
 import torch
 from torch.utils.data import Dataset, DataLoader
@@ -20,7 +21,6 @@ from utils.train_utils import train_epoch, val_epoch
 from utils.setup_utils import setup_DDP, setup_optimizer, setup_dataset, setup_model
 
 
-
 def train(
         rank: int,
         world_size: int,
@@ -29,7 +29,7 @@ def train(
         val_dataset: Dataset,
         result_folder: str
 ):
-    
+    # Set up DDP
     setup_DDP(rank, world_size, config["master_name"])
 
     # Init logger

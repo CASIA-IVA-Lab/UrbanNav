@@ -38,7 +38,7 @@ class CrossAttentionEncoder(nn.Module):
 
 class PositionalEncoding(nn.Module):
     """
-    Borrowed from https://github.com/robodhruv/visualnav-transformer/blob/main/train/vint_train/models/vint/self_attention.py
+    ref: https://github.com/robodhruv/visualnav-transformer/blob/main/train/vint_train/models/vint/self_attention.py
     """
     def __init__(self, d_model, max_seq_len=6):
         super().__init__()
