@@ -1,0 +1,26 @@
+.vscode/
+.idea/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# log and output files
+logs/
+*.log
+outputs/
+results/
+wandb/
+vis_res/
+
+# checkpoint files
+checkpoints/
+*.ckpt
+*.pt
+*.pth
+*.zip
+
+# cache
+.cache/
+*.mdb
+*.lmdb/
