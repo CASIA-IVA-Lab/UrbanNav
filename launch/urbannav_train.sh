@@ -1,7 +1,7 @@
-export CUDA_VISIBLE_DEVICES=0,1,2,3
+export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
 export NUM_NODES=1
 export CURR_NODE_RANK=0
-export WORLD_SIZE=4
+export WORLD_SIZE=8
 
 torchrun \
   --nnodes=${NUM_NODES} \

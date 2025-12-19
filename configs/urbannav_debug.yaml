@@ -1,0 +1,68 @@
+project_name: UrbanNav_debug
+run_name: run_debug
+use_wandb: False
+
+# Common
+mode: train  # train, test
+seed: 0
+epochs: 100
+batch_size: 4
+num_workers: 0
+context_size: 8
+len_traj_pred: 8
+learn_angle: False
+
+# training setup
+train:
+  optimizer: adamw  # adam, sgd, adamw
+  lr: 1e-4
+  weight_decay: 1e-2
+  scheduler: cosine  # step_lr, cosine, none
+  step_size: 10
+  gamma: 0.1
+  direction_loss_weight: 5.0
+  feature_loss_weight: 0.1
+  arrived_loss_weight: 1.0
+
+# model
+model:
+  feature_fusion: film  # mlp, cross_attention, film
+  model_path: Null
+  visual_encoder: 'dinov2_vitl14'
+  clip_type: ViT-B/32
+  visual_feat_size: 1024  # vits14: 384, vitb14: 768, vitl14: 1024, vitg14: 1536
+  film_feat_size: 4096
+  rgb_normalize: True
+  rgb_resize: True
+  attn_dim: 1024
+  num_attn_layers: 4
+  num_attn_heads: 8
+  ff_dim_factor: 4
+  num_freqs: 6
+  dropout: 0
+
+# data
+data:
+  data_dir: /path/to/data_dir
+  train_split: data_splits/urbannav_train_data.pkl
+  test_seen_split: data_splits/urbannav_test_seen_data.pkl
+  test_unseen_split: data_splits/urbannav_test_unseen_data.pkl
+  feat_file: Null  # Specify the path to the pre-extracted feature files to accelerate training.
+  split: 0.9
+  video_freq: 1
+  pose_freq: 5
+  target_freq: 1
+  image_size: [360, 640]  # height, width
+  crop: [350, 630]
+  resize: [350, 630]
+  input_noise: 0.1  # sigma
+  search_lower_bound: 10
+  search_upper_bound: 60
+  arrived_threshold: 5  # num frame
+  arrived_prob: 0.3
+
+# logging stuff
+log_freq: 500  # For step
+save_model_freq: 4  # For epoch
+eval_freq: 1 # For epoch
+

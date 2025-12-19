@@ -29,5 +29,5 @@ data_cache/
 # test
 demos
 demo.py
-configs/urbannav_debug.yaml
+configs/urbannav_debug_local.yaml
 filtered_trajs.txt
