@@ -151,6 +151,18 @@ You can also use a single GPU for debugging:
 python train.py -c configs/urbannav_debug.yaml
 ```
 
+### Optional
+We strongly recommend pre-extracting and caching the visual features before training. This significantly improves training efficiency and reduces GPU memory usage.
+
+Use `scripts/extract_features_cache.py` to extract image features and save them in LMDB format: 
+```
+python scripts/extract_features_cache.py \
+    --data-dir /path/to/data_dir \
+    --cache_dir /path/to/cache_dir \
+    --model-name <model_name> \
+    --gpus 0 1 2 3 4 5 6 7
+```
+Then, update the `data/feat_file` parameter in `configs/urbannav_train.yaml` to point to your LMDB cache path, and you're ready to start efficient training.
 
 
 ## 🌟 Citation

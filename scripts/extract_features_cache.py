@@ -158,7 +158,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="Extract Features to LMDB")
     parser.add_argument("--data-dir", "-d", type=str, help="Path to the image data directory")
-    parser.add_argument("--output-dir", "-o", type=str, help="Path to the output LMDB directory")
+    parser.add_argument("--cache-dir", "-o", type=str, help="Path to the output LMDB directory")
     parser.add_argument("--model-name", "-m", type=str, default='dinov2_vitl14', help="Model name to use")
     parser.add_argument("--gpus", "-g", type=int, nargs='+', default=[0], help="List of GPU ids to use")
     args = parser.parse_args()
@@ -166,8 +166,8 @@ if __name__ == "__main__":
     gpu_ids = args.gpus
     world_size = len(gpu_ids)
 
-    os.makedirs(args.output_dir, exist_ok=True)
-    output_file = os.path.join(args.output_dir, f"urbannav_{args.model_name}_feat.lmdb")
+    os.makedirs(args.cache_dir, exist_ok=True)
+    output_file = os.path.join(args.cache_dir, f"urbannav_{args.model_name}_feat.lmdb")
     if os.path.exists(output_file):
         raise FileExistsError(f"'{output_file}' already exists.")
     
