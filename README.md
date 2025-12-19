@@ -126,7 +126,7 @@ UrbanNav/data
 
 
 ## 🏋️ Training
-### Quick start
+### Quick Start
 For a quick start, use `launch/urbannav_train.sh` to train the navigation policy on the UrbanNav dataset.
 ```
 bash launch/urbannav_train.sh
