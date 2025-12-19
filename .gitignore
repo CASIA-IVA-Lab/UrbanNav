@@ -24,3 +24,10 @@ checkpoints/
 .cache/
 *.mdb
 *.lmdb/
+data_cache/
+
+# test
+demos
+demo.py
+configs/urbannav_debug.yaml
+filtered_trajs.txt

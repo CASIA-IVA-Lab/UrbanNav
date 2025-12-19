@@ -1,23 +1,22 @@
-project_name: UrbanNav
+project_name: UrbanNav_train
 run_name: run_demo
-
-master_name: 12345
-gpu_ids: [0,1]
+use_wandb: True
 
 # Common
 mode: train  # train, test
 seed: 0
-epochs: 30
-batch_size: 128
-num_workers: 12
+epochs: 100
+batch_size: 16
+num_workers: 0
 context_size: 8
 len_traj_pred: 8
 learn_angle: False
 
 # training setup
 train:
-  optimizer: sgd  # adam, sgd, adamw
-  lr: 2e-4
+  optimizer: adamw  # adam, sgd, adamw
+  lr: 1e-4
+  weight_decay: 1e-2
   scheduler: cosine  # step_lr, cosine, none
   step_size: 10
   gamma: 0.1
@@ -35,8 +34,6 @@ model:
   film_feat_size: 4096
   rgb_normalize: True
   rgb_resize: True
-  crop: [350, 630]
-  resize: [224, 224]
   attn_dim: 1024
   num_attn_layers: 4
   num_attn_heads: 8
@@ -46,17 +43,18 @@ model:
 
 # data
 data:
-  data_dir: /path/to/datas
-  lut_file: datasets/scene_type_lut.json
-  split_file: datasets/landmark_train_data.pkl
-  image_file: /path/to/images
-  feat_file: /path/to/features
-  use_image: True
+  data_dir: /path/to/data_dir
+  train_split: data_splits/urbannav_train_data.pkl
+  test_seen_split: data_splits/urbannav_test_seen_data.pkl
+  test_unseen_split: data_splits/urbannav_test_unseen_data.pkl
+  feat_file: Null  # Specify the path to the pre-extracted feature files to accelerate training.
   split: 0.9
-  video_fps: 1
-  pose_fps: 5
-  target_fps: 1
+  video_freq: 1
+  pose_freq: 5
+  target_freq: 1
   image_size: [360, 640]  # height, width
+  crop: [350, 630]
+  resize: [350, 630]
   input_noise: 0.1  # sigma
   search_lower_bound: 10
   search_upper_bound: 60
@@ -64,7 +62,7 @@ data:
   arrived_prob: 0.3
 
 # logging stuff
-iter_log_freq: 200  # For iteration
-save_model_freq: 10  # For epoch
-eval_freq: 1 # in epochs
+log_freq: 500  # For step
+save_model_freq: 4  # For epoch
+eval_freq: 1 # For epoch
 

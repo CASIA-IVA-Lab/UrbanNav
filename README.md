@@ -32,22 +32,102 @@
 </a>
 </p>
 
+
+## 📢 News
+**[12/19/2025]:** UrbanNav dataset is now available! Check out our [Hugging Face](https://huggingface.co/datasets/Vigar001/UrbanNav) for more details.
+
+## 👋 Introduction
+**UrbanNav** is a large-scale urban navigation dataset automatically constructed using Qwen2.5-VL based on web data, comprising 47k trajectories and 3M language instructions.  designed for training language-guided embodied urban navigation and enabling fair offline evaluation. Our navigation policy trained on UrbanNav achieves state-of-the-art performance both on the benchmark and in real-world deployment.
+
 ![](src/overview.png)
 
 
-## Demo
-**UrbanNav** is a large-scale urban navigation dataset automatically constructed using Qwen2.5-VL based on web data, comprising 47k trajectories and 3M language instructions. Based on this dataset, we train language-conditioned navigation models designed for complex and dynamic outdoor scenarios. Our approach is deployed on a four-wheel differential-drive robot and validated in challenging and diverse outdoor urban environments.
+## 🚗 Demo
+UrbanNav navigation policy is deployed on a four-wheel differential-drive robot and validated in challenging and diverse outdoor urban environments.
 
 ![](src/UrabnNav-Demo.gif)
 
 
-## Abstract
-Navigating complex urban environments using natural language instructions poses significant challenges for embodied agents, including noisy language instructions, ambiguous spatial references, diverse landmarks, and dynamic street scenes. Current visual navigation methods are typically limited to simulated or off-street environments, and often rely on precise goal formats, such as specific coordinates or images. This limits their effectiveness for autonomous agents like last-mile delivery robots navigating unfamiliar cities. To address these limitations, we introduce UrbanNav, a scalable framework that trains embodied agents to follow free-form language instructions in diverse urban settings. Leveraging web-scale city walking videos, we develop an scalable annotation pipeline that aligns human navigation trajectories with language instructions grounded in real-world landmarks. UrbanNav encompasses over 1,500 hours of navigation data and 3 million instruction-trajectory-landmark triplets, capturing a wide range of urban scenarios. Our model learns robust navigation policies to tackle complex urban scenarios, demonstrating superior spatial reasoning, robustness to noisy instructions, and generalization to unseen urban settings. Experimental results show that UrbanNav significantly outperforms existing methods, highlighting the potential of large-scale web video data to enable language-guided, real-world urban navigation for embodied agents.
+## ⚙️ Installation
+```
+conda create -n urbannav python=3.10
+conda activate urbannav
+pip install -r requirements.txt
+```
 
 
-## UrbanNav Dataset
-The UrbanNav dataset will be publicly released by the end of 2025.
+## 🗃️ UrbanNav Dataset
+You can easily prepare the UrbanNav dataset by following the steps below:
 
+#### 1. Download 
+All YouTube video IDs used by UrbanNav are listed in the [video list](video_list.txt). You need to download these videos in 360p resolution at 30 FPS and place them in the same directory. 
+
+The trajectory data and instruction annotations are publicly available on [Hugging Face](https://huggingface.co/datasets/Vigar001/UrbanNav). Please download `annos.tar.gz` and extract it:
+```
+wget https://huggingface.co/datasets/Vigar001/UrbanNav/resolve/main/annos.tar.gz
+tar -xzf annos.tar.gz
+```
+
+
+#### 2. Split the videos.
+Use `scripts/split_video_parallel.py` to split the raw videos into 120-second segments in parallel. After completion, the original videos can be safely deleted to save storage space.
+```
+python scripts/split_video_parallel.py \ 
+    --video-dir /path/to/videos \
+    --output-dir /path/to/video_clips \
+    --workers 32
+```
+
+#### 3. Extract frames
+Use `scripts/extract_video_frames.py` to extract images in parallel from each trajectory. UrbanNav uses an image frequency of 1 FPS; if your downloaded videos are recorded at 30 FPS, set `--stride 30` to align the extracted frames with our labels.
+```
+python scripts/extract_video_frames.py \
+    --input_dir /path/to/video_clips \
+    --output-dir /path/to/data_dir \
+    --stride 30 \
+    --workers 32
+```
+
+#### 4. Merge annotations
+This is the final step in preparing the UrbanNav dataset! Run `scripts/merge_annotations.py` to copy annotation files into their corresponding trajectory folders. 
+```
+scripts/merge_annotations.py \
+    --data-dir /path/to/data_dir \
+    --anno-dir  /path/to/annotation_dir
+```
+
+After running the script, your data will have the following structure.
+
+
+```
+UrbanNav/data
+├── <video_name_0000>
+|   ├── 0000.jpg
+|   ├── 0001.jpg
+|   ├── ...
+|   ├── T_1.jpg
+|   ├── traj_data.pkl
+|   └── label.json
+├── <video_name_0001>
+|   ├── 0000.jpg
+|   ├── 0001.jpg
+|   ├── ...
+|   ├── T_2.jpg
+|   ├── traj_data.pkl
+|   └── label.json 
+|   ...
+└── <video_name_N>
+    ├── 0000.jpg
+    ├── 0001.jpg
+    ├── ...
+    ├── T_N.jpg
+    ├── traj_data.pkl
+    └── label.json 
+```
+**Note**: Approximately 50% of trajectories were filtered out due to missing annotation files; the filtered trajectories are listed in `filtered_trajs.txt` (generated by `scripts/merge_annotations.py`) and can be safely deleted to free up storage space.
+
+
+<!-- ## 🏋️ Train -->
 
 ## 🌟 Citation
 

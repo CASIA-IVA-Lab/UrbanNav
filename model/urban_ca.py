@@ -97,24 +97,33 @@ class PolarEmbedding(nn.Module):
 
 
 class UrbanNavCrossAttention(nn.Module):
-    def __init__(self, config: dict):
+    def __init__(self,
+                 context_size: int,
+                 len_traj_pred: int,
+                 visual_feat_size: int,
+                 num_freqs: int,
+                 attn_dim: int,
+                 num_attn_layers: int,
+                 num_attn_heads: int,
+                 ff_dim_factor: int,
+                 dropout: float,
+                 **kwargs
+                 ):
         super().__init__()
 
-        self.batch_size = config["batch_size"]
-        self.context_size = config["context_size"]
+        self.context_size = context_size
 
-        self.len_traj_pred = config["len_traj_pred"]
-        self.visual_feat_size = config["model"]["visual_feat_size"]
+        self.len_traj_pred = len_traj_pred
+        self.visual_feat_size = visual_feat_size
 
-        self.attn_dim = config["model"]["visual_feat_size"]
-        self.num_attn_layers = config["model"]["num_attn_layers"]
-        self.num_attn_heads = config["model"]["num_attn_heads"]
-        self.ff_dim_factor = config["model"]["ff_dim_factor"]
-        self.dropout = config["model"]["dropout"]
-
-        self.cord_embedding = PolarEmbedding(config["model"]["num_freqs"])
-        self.cord_embedding_size = self.cord_embedding.out_dim * (self.context_size)
-        self.cord_compress = nn.Linear(self.cord_embedding_size, self.attn_dim)
+        self.attn_dim = attn_dim
+        self.num_attn_layers = num_attn_layers
+        self.num_attn_heads = num_attn_heads
+        self.ff_dim_factor = ff_dim_factor
+        self.dropout = dropout
+        self.coord_embedding = PolarEmbedding(num_freqs)
+        self.coord_embedding_size = self.coord_embedding.out_dim * (self.context_size)
+        self.coord_compress = nn.Linear(self.coord_embedding_size, self.attn_dim)
 
         # Feature project layer
         self.vision_compress = nn.Sequential(
@@ -156,7 +165,9 @@ class UrbanNavCrossAttention(nn.Module):
         self.wp_predictor = nn.Linear(32, self.len_traj_pred * 2)
         self.arrived_predictor = nn.Linear(32, 1)
         
-    def forward(self, text_feat, obs_feat, cord):
+    def forward(self, text_feat, obs_feat, **kwargs):
+        B = text_feat.size(0)
+        coord = kwargs["coord"]
 
         # Feature project
         text_feat = self.text_compress(text_feat).unsqueeze(1)
@@ -165,24 +176,23 @@ class UrbanNavCrossAttention(nn.Module):
 
         obs_feat = self.vision_compress(obs_feat).transpose(0, 1)
 
-        cord_enc = self.cord_embedding(cord).view(self.batch_size, -1)
-        cord_enc = self.cord_compress(cord_enc).view(self.batch_size, 1, -1)
+        coord_enc = self.coord_embedding(coord).view(B, -1)
+        coord_enc = self.coord_compress(coord_enc).view(B, 1, -1)
 
         # Feature Fusion
         obsgoal_encoding = self.ca_encoder(text_feat_attn, obs_feat)  # query: text, key: obs, value: obs
         obsgoal_encoding = obsgoal_encoding.transpose(0, 1)
 
         # Encode
-        input_tokens = torch.cat([obsgoal_encoding, cord_enc], dim=1)
+        input_tokens = torch.cat([obsgoal_encoding, coord_enc], dim=1)
         input_tokens = self.positional_encoding(input_tokens)
         feature_pred = self.sa_encoder(input_tokens)
 
         # Decode
-        decode_out = self.mlp_decoder(feature_pred.view(self.batch_size, -1))
+        decode_out = self.mlp_decoder(feature_pred.view(B, -1))
 
         # Predict
-        wp_pred = self.wp_predictor(decode_out).view(self.batch_size, self.len_traj_pred, 2)
-        arrived_pred = self.arrived_predictor(decode_out).view(self.batch_size, 1)
-
+        wp_pred = self.wp_predictor(decode_out).view(B, self.len_traj_pred, 2)
+        arrived_pred = self.arrived_predictor(decode_out).view(B, 1)
         return wp_pred, arrived_pred, feature_pred[:, 1:-1]
 

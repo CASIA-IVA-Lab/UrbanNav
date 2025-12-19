@@ -292,28 +292,37 @@ class FiLMNetwork(nn.Module):
         return features
 
 
-class UrbanNav(nn.Module):
-    def __init__(self, config):
+class UrbanNavFiLM(nn.Module):
+    def __init__(self,
+                 context_size: int,
+                 len_traj_pred: int,
+                 visual_feat_size: int,
+                 num_freqs: int,
+                 attn_dim: int,
+                 num_attn_layers: int,
+                 num_attn_heads: int,
+                 ff_dim_factor: int,
+                 dropout: float,
+                 **kwargs,
+                 ):
         super().__init__()
 
-        self.batch_size = config["batch_size"]
-        self.context_size = config["context_size"]
+        self.context_size = context_size
+        self.len_traj_pred = len_traj_pred
+        self.visual_feat_size = visual_feat_size
+        self.film_feature_size = kwargs['film_feature_size']
 
-        self.len_traj_pred = config["len_traj_pred"]
-        self.visual_feat_size = config["model"]["visual_feat_size"]
-        self.film_feature_size = config["model"]["film_feat_size"]
+        self.attn_dim = attn_dim
+        self.num_attn_layers = num_attn_layers
+        self.num_attn_heads = num_attn_heads
+        self.ff_dim_factor = ff_dim_factor
+        self.dropout = dropout
 
-        self.attn_dim = config["model"]["visual_feat_size"]
-        self.num_attn_layers = config["model"]["num_attn_layers"]
-        self.num_attn_heads = config["model"]["num_attn_heads"]
-        self.ff_dim_factor = config["model"]["ff_dim_factor"]
-        self.dropout = config["model"]["dropout"]
-
-        if config["model"]["clip_type"] == "ViT-B/32":
+        if kwargs['clip_type'] == "ViT-B/32":
             self.obsgoal_encoder = FiLMNetwork(8, 128, 512)
-        elif config == "ViT-L/14@336px":
+        elif kwargs['clip_type'] == "ViT-L/14@336px":
             self.obsgoal_encoder = FiLMNetwork(8, 128, 768)
-        elif config == "RN50x64":
+        elif kwargs['clip_type'] == "RN50x64":
             self.obsgoal_encoder = FiLMNetwork(8, 128, 1024)
         self.obsgoal_encoder = replace_bn_with_gn(self.obsgoal_encoder)
 
@@ -331,7 +340,7 @@ class UrbanNav(nn.Module):
         self.linear2 = nn.Linear(self.ff_dim_factor * self.attn_dim, self.attn_dim)
         self.bn2 = nn.BatchNorm1d(self.attn_dim)
 
-        self.coord_embedding = PolarEmbedding(config["model"]["num_freqs"])
+        self.coord_embedding = PolarEmbedding(num_freqs)
         self.coord_embedding_size = self.coord_embedding.out_dim * self.context_size
         self.coord_compress = nn.Linear(self.coord_embedding_size, self.attn_dim)
 
@@ -363,7 +372,9 @@ class UrbanNav(nn.Module):
         self.arrived_predictor = nn.Linear(32, 1)
 
 
-    def forward(self, text_feat, curr_obs_img, obs_feat, coord):
+    def forward(self, text_feat, obs_feat, **kwargs):
+        B = text_feat.size(0)
+        curr_obs_img = kwargs["curr_obs_img"]
 
         obsgoal_enc = self.obsgoal_encoder(curr_obs_img, text_feat)
         obsgoal_enc = self.obsgoal_compress(obsgoal_enc.flatten(start_dim=1)).unsqueeze(1)
@@ -383,11 +394,10 @@ class UrbanNav(nn.Module):
         feature_pred = self.sa_encoder(input_tokens)
 
         # Decode
-        decode_out = self.mlp_decoder(feature_pred.reshape(self.batch_size, -1))
+        decode_out = self.mlp_decoder(feature_pred.reshape(B, -1))
 
         # Predict
-        wp_pred = self.wp_predictor(decode_out).reshape(self.batch_size, self.len_traj_pred, 2)
-        arrived_pred = self.arrived_predictor(decode_out).reshape(self.batch_size, 1)
-
+        wp_pred = self.wp_predictor(decode_out).reshape(B, self.len_traj_pred, 2)
+        arrived_pred = self.arrived_predictor(decode_out).reshape(B, 1)
         return wp_pred, arrived_pred, feature_pred[:, 1:]
 
