@@ -34,7 +34,7 @@
 
 
 ## 📢 News
-**[12/19/2025]:** UrbanNav dataset is now available! Check out our [Hugging Face](https://huggingface.co/datasets/Vigar001/UrbanNav) for more details.
+- **[12/19/2025]:** UrbanNav dataset is now available! Check out our [Hugging Face](https://huggingface.co/datasets/Vigar001/UrbanNav) for more details.
 
 ## 👋 Introduction
 **UrbanNav** is a large-scale urban navigation dataset automatically constructed using Qwen2.5-VL based on web data, comprising 47k trajectories and 3M language instructions.  designed for training language-guided embodied urban navigation and enabling fair offline evaluation. Our navigation policy trained on UrbanNav achieves state-of-the-art performance both on the benchmark and in real-world deployment.
