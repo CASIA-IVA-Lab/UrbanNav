@@ -127,11 +127,11 @@ UrbanNav/data
 
 ## 🏋️ Training
 ### Quick Start
-For a quick start, use `launch/urbannav_train.sh` to train the navigation policy on the UrbanNav dataset.
+For a quick start, use `launch/urbannav_train.sh` to train the navigation policy on the UrbanNav dataset,
 ```
 bash launch/urbannav_train.sh
 ```
-Or use `torchrun` to customize the training configuration: 
+or use `torchrun` to customize the training configuration: 
 ```
 export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
 export NUM_NODES=1
