@@ -28,7 +28,8 @@ def test(args):
         config = json.load(f)
 
     config["mode"] = "test"
-    config["batch_size"] = args.batch_size
+    if args.batch_size is not None:
+        config["batch_size"] = args.batch_size
     device = f'cuda:{args.gpu}'
     
     # Set random seed
@@ -126,15 +127,15 @@ if __name__=='__main__':
         help="Path to the checkpoint file for loading the trained model."
     )
     parser.add_argument(
+        "--batch-size", "-b", 
+        type=int, 
+        default=None, 
+        help="Batch size to use during testing."
+    )
+    parser.add_argument(
         "--gpu", "-g", 
         type=int, 
         help="GPU device id to use for testing (e.g., 0 for cuda:0)."
-    )
-    parser.add_argument(
-        "--batch_size", "-b", 
-        type=int, 
-        default=64, 
-        help="Batch size to use during testing."
     )
     args = parser.parse_args()
         

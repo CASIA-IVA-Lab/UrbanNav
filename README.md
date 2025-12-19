@@ -158,12 +158,21 @@ Use `scripts/extract_features_cache.py` to extract image features and save them 
 ```
 python scripts/extract_features_cache.py \
     --data-dir /path/to/data_dir \
-    --cache_dir /path/to/cache_dir \
+    --cache-dir /path/to/cache_dir \
     --model-name <model_name> \
-    --gpus 0 1 2 3 4 5 6 7
+    --gpus <gpu_ids>
 ```
 Then, update the `data/feat_file` parameter in `configs/urbannav_train.yaml` to point to your LMDB cache path, and you're ready to start efficient training.
 
+## 📊 Evaluation
+Use `test.py` to evaluate the model on a single GPU.
+```
+python test.py \
+    --checkpoint /path/to/checkpoint \
+    --batch-size <test_batch_size> \
+    --gpu 0
+```
+The `result.json` will be saved in the project directory corresponding to the checkpoint. We plan to enhance the script to support multi-GPU parallel evaluation in the future.
 
 ## 🌟 Citation
 
