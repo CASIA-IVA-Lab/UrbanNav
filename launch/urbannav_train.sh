@@ -9,5 +9,5 @@ torchrun \
   --node-rank=${CURR_NODE_RANK} \
   --rdzv-backend=c10d \
   --rdzv-endpoint=localhost:12333 \
-  train.py --config configs/urbannav_debug.yaml
+  train.py --config configs/urbannav_train.yaml
   
