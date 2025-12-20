@@ -67,7 +67,7 @@ tar -xzf annos.tar.gz
 ```
 
 
-#### 2. Split the videos.
+#### 2. Split videos
 Use `scripts/split_video_parallel.py` to split the raw videos into 120-second segments in parallel. After completion, the original videos can be safely deleted to save storage space.
 ```
 python scripts/split_video_parallel.py \ 
@@ -174,8 +174,8 @@ python test.py \
 ```
 The `result.json` will be saved in the project directory corresponding to the checkpoint. We plan to enhance the script to support multi-GPU parallel evaluation in the future.
 
-## 🌟 Citation
 
+## 🌟 Citation
 If you find this repository or our paper useful, please consider **starring** this repository and **citing** our paper:
 ```bibtex
 @misc{mei2025urbannavlearninglanguageguidedurban,
