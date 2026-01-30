@@ -34,7 +34,10 @@
 
 
 ## 📢 News
+- **[01/30/2026]:** A small subset of UrbanNav has been uploaded to [Hugging Face](https://huggingface.co/datasets/Vigar001/UrbanNav) for debugging. Feel free to explore!
 - **[12/19/2025]:** UrbanNav dataset is now available! Check out our dataset on [Hugging Face](https://huggingface.co/datasets/Vigar001/UrbanNav) for more details.
+
+
 
 ## 👋 Introduction
 **UrbanNav** is a large-scale urban navigation dataset automatically constructed using Qwen2.5-VL based on web data, comprising 47k trajectories and 3M language instructions.  designed for training language-guided embodied urban navigation and enabling fair offline evaluation. Our navigation policy trained on UrbanNav achieves state-of-the-art performance both on the benchmark and in real-world deployment.
@@ -60,10 +63,16 @@ You can easily prepare the UrbanNav dataset by following the steps below:
 #### 1. Download 
 All YouTube video IDs used by UrbanNav are listed in the [video list](video_list.txt). You need to download these videos in 360p resolution at 30 FPS and place them in the same directory. 
 
-The trajectory data and instruction annotations are publicly available on [Hugging Face](https://huggingface.co/datasets/Vigar001/UrbanNav). Please download `annos.tar.gz` and extract it:
+The trajectory data and instruction annotations are publicly available on [Hugging Face](https://huggingface.co/datasets/Vigar001/UrbanNav). Please download `annos.tar.gz` and extract it.
 ```
 wget https://huggingface.co/datasets/Vigar001/UrbanNav/resolve/main/annos.tar.gz
 tar -xzf annos.tar.gz
+```
+
+Also, a small subset of UrbanNav has been uploaded, and you can use it to debug.
+```
+wget https://huggingface.co/datasets/Vigar001/UrbanNav/resolve/main/data_samples.tar.gz
+tar -xzf data_samples.tar.gz
 ```
 
 
