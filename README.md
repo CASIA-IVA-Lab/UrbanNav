@@ -187,6 +187,16 @@ The `result.json` will be saved in the project directory corresponding to the ch
 ## 🌟 Citation
 If you find this repository or our paper useful, please consider **starring** this repository and **citing** our paper:
 ```bibtex
+@inproceedings{mei2026urbannav,
+  title={UrbanNav: Learning Language-Guided Embodied Urban Navigation from Web-Scale Human Trajectories},
+  author={Mei, Yanghong and Yang, Yirong and Guo, Longteng and Wang, Qunbo and Yu, Ming-Ming and He, Xingjian and Wu, Wenjun and Liu, Jing},
+  booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
+  volume={40},
+  number={22},
+  pages={18505--18513},
+  year={2026}
+}
+
 @misc{mei2025urbannavlearninglanguageguidedurban,
       title={UrbanNav: Learning Language-Guided Urban Navigation from Web-Scale Human Trajectories}, 
       author={Yanghong Mei and Yirong Yang and Longteng Guo and Qunbo Wang and Ming-Ming Yu and Xingjian He and Wenjun Wu and Jing Liu},
